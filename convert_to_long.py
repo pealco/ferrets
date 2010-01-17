@@ -1,4 +1,4 @@
-import readmat from scipy.io
+from scipy.io import loadmat
 
 def write_to_file(filename, contents):
     """Writes a string to a file."""
@@ -11,7 +11,7 @@ def make_row(*L):
     return "\t".join(str(elt) for elt in L) + "\n"
 
 if __name__ == "__main__":
-    data = readmat("fdata_lpp.mat")
+    data = loadmat("fdata_lpp.mat")
     
     # Pull out data from `data`
     labels = [label[0][0] for label in data['labels']]
@@ -37,6 +37,6 @@ if __name__ == "__main__":
                 for trial in xrange(trials):
                     out += make_row(label, neuron, bin, trial, segment[neuron, bin, trial])
 
-    write_to_file("ferret_data.txt", 'w')
+    write_to_file("ferret_data.txt", out)
         
     

@@ -10,6 +10,27 @@ def make_row(*L):
     "Creates a tab-separated row."
     return "\t".join(str(elt) for elt in L) + "\n"
 
+def convert_to_long(labels, resp_dict):
+    out = ""
+    for label in labels:
+        # Omit oy because it only has 1 trial.
+        if label == "oy":     continue
+        # Omit "closures"
+        if label[1:] == "cl": continue
+        # Omit othe crap
+        if label == "pau":    continue
+        if label == "epi":    continue
+        
+        segment = resp_dict[label]
+        neurons, bins, trials = segment.shape
+        print label
+
+        for neuron in xrange(neurons):
+            for bin in xrange(bins):
+                for trial in xrange(trials):
+                    out += make_row(label, neuron, bin, trial, segment[neuron, bin, trial])
+    return out
+
 if __name__ == "__main__":
     data = loadmat("fdata_lpp.mat")
     
@@ -23,25 +44,8 @@ if __name__ == "__main__":
         resp_dict[segment] = resps[i][0]
     
     # Convert to long format. Each observation on a row.
-    out = ""
-    for label in labels:
-        # Omit oy because it only has 1 trial.
-        if label == "oy":     continue
-        # Omit "closures"
-        if label[1:] == "cl": continue
-        # Omit othe crap
-        if label == "pau":    continue
-        if label == "epi":    continue
-        segment = resp_dict[label]
-        trials = 0
-        neurons, bins, trials = segment.shape
-        print label
 
-        for neuron in xrange(neurons):
-            for bin in xrange(bins):
-                for trial in xrange(trials):
-                    out += make_row(label, neuron, bin, trial, segment[neuron, bin, trial])
-
+    out = convert_to_long(labels, resp_dict)
     write_to_file("ferret_data.txt", out)
         
     

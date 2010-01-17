@@ -26,7 +26,12 @@ if __name__ == "__main__":
     out = ""
     for label in labels:
         # Omit oy because it only has 1 trial.
-        if label == "oy": continue
+        if label == "oy":     continue
+        # Omit "closures"
+        if label[1:] == "cl": continue
+        # Omit othe crap
+        if label == "pau":    continue
+        if label == "epi":    continue
         segment = resp_dict[label]
         trials = 0
         neurons, bins, trials = segment.shape
